@@ -27,7 +27,7 @@ export interface ImageFile {
   compressionRatio?: number;
   status: 'uploaded' | 'queued' | 'processing' | 'completed' | 'failed';
   metadata: ImageMetadata; // Editable metadata
-  originalMetadata?: Record<string, any>; // Raw metadata read from original file
+  originalMetadata?: Record<string, unknown>; // Raw metadata read from original file
   processingSettings?: CompressionSettings; // Settings used for this file
   downloadUrl?: string; // URL to the final processed file in temporary storage
   errorMessage?: string; // Error message if processing failed
