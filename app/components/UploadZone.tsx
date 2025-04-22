@@ -21,8 +21,9 @@ export default function UploadZone({ onFilesUploaded, setErrorMessage }: UploadZ
         setErrorMessage(`Unsupported file type: ${file.name} (${file.type})`);
         return; // Skip unsupported files
       }
-      if (file.size > 10 * 1024 * 1024) { // 10MB limit from PRD
-        setErrorMessage(`File too large: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+      // Update size limit check
+      if (file.size > 4.5 * 1024 * 1024) { // 4.5MB limit
+        setErrorMessage(`File too large: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB). Max size is 4.5MB.`);
         return; // Skip large files
       }
       formData.append('files', file);
@@ -66,7 +67,7 @@ export default function UploadZone({ onFilesUploaded, setErrorMessage }: UploadZ
       'image/webp': ['.webp'],
       'image/avif': ['.avif'],
     },
-    maxSize: 10 * 1024 * 1024, // 10MB
+    maxSize: 4.5 * 1024 * 1024, // 4.5MB limit
     multiple: true,
   });
 
@@ -82,7 +83,7 @@ export default function UploadZone({ onFilesUploaded, setErrorMessage }: UploadZ
           <p className="text-blue-600">Drop the images here ...</p> :
           <p className="text-gray-500">Drag &apos;n&apos; drop some images here, or click to select files</p>
       }
-      <p className="text-sm text-gray-400 mt-2">Supported: JPG, PNG, WebP, AVIF (Max 10MB each)</p>
+      <p className="text-sm text-gray-400 mt-2">Supported: JPG, PNG, WebP, AVIF (Max 4.5MB each)</p>
       <div className="flex text-sm text-gray-600">
         <label
           htmlFor="file-upload"
@@ -92,7 +93,7 @@ export default function UploadZone({ onFilesUploaded, setErrorMessage }: UploadZ
         <p className="pl-1">or drag and drop</p>
       </div>
       <p className="text-xs text-gray-500">
-        PNG, JPG, GIF, WEBP up to 10MB. We&apos;ll optimize it for you!
+        PNG, JPG, GIF, WEBP up to 4.5MB. We&apos;ll optimize it for you!
       </p>
     </div>
   );

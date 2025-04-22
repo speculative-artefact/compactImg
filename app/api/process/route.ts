@@ -8,11 +8,24 @@ import type { ImageFile, CompressionSettings, ImageMetadata } from '@/app/types'
 const MVP_PROCESS_FORMATS = ['jpeg', 'png'];
 
 async function fetchBlob(url: string): Promise<ArrayBuffer> {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch blob: ${response.statusText}`);
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      // More specific error for HTTP errors
+      throw new Error(`Failed to fetch blob: HTTP ${response.status} ${response.statusText}`);
+    }
+    return response.arrayBuffer();
+  } catch (error: any) {
+    // Catch network errors (like DNS resolution failure)
+    console.error("fetchBlob error details:", error); // Log the original error
+    if (error instanceof TypeError && error.message.includes('fetch failed')) {
+       // Check for cause if available (might differ across environments)
+       const cause = error.cause ? ` Cause: ${error.cause}` : '';
+       throw new Error(`Network error fetching blob at ${url}.${cause}`);
+    }
+    // Re-throw other errors or wrap them
+    throw new Error(`Failed to fetch blob at ${url}: ${error.message}`);
   }
-  return response.arrayBuffer();
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {

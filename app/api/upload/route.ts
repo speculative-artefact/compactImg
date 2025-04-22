@@ -4,8 +4,8 @@ import type { NextRequest } from 'next/server';
 import type { ImageFile } from '@/app/types';
 import { nanoid } from 'nanoid';
 
-// Define max file size (10MB)
-const MAX_FILE_SIZE_MB = 10;
+// Define max file size (4.5MB)
+const MAX_FILE_SIZE_MB = 4.5;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
 // Define allowed mime types for MVP (JPEG, PNG) + others from PRD for future phases
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     if (file.size > MAX_FILE_SIZE_BYTES) {
-      errors.push(`File too large: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+      errors.push(`File too large: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB). Max size is ${MAX_FILE_SIZE_MB}MB.`);
       continue; // Skip this file
     }
 

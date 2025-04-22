@@ -95,6 +95,15 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-**Remember to configure the `BLOB_READ_WRITE_TOKEN` environment variable in your Vercel project settings before deploying.**
+**Before deploying, configure the `BLOB_READ_WRITE_TOKEN` environment variable in your Vercel project settings:**
+
+1.  Go to your project on the Vercel dashboard.
+2.  Navigate to the **Settings** tab.
+3.  Click on **Environment Variables** in the left sidebar.
+4.  Add a new variable:
+    *   **Name:** `BLOB_READ_WRITE_TOKEN`
+    *   **Value:** Paste the token you obtained from the Vercel Storage tab (the same one used in `.env.local`).
+    *   **Environment(s):** Select Production, Preview, and Development (or as needed).
+5.  Click **Save**.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
