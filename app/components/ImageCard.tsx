@@ -61,16 +61,19 @@ export default function ImageCard({ file, onProcessImage, isProcessing }: ImageC
   return (
     <div className="border rounded-lg p-4 mb-4 shadow-sm bg-white">
       <div className="flex flex-col md:flex-row gap-4">
-        {/* Thumbnail/Preview */} 
+        {/* Thumbnail/Preview */}
         <div className="flex-shrink-0 w-full md:w-32 h-32 bg-gray-100 rounded flex items-center justify-center overflow-hidden">
           {file.blobUrl ? (
+            // Note: TS Error "Cannot find name 'img'" (ts2304) on the line below might indicate a tsconfig.json issue
+            // (e.g., missing "dom" in compilerOptions.lib) or a broader environment setup problem.
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={file.blobUrl} alt={file.originalName} className="object-contain max-h-full max-w-full" />
           ) : (
             <span className="text-gray-400 text-sm">No preview</span>
           )}
         </div>
 
-        {/* File Info & Metadata Inputs */} 
+        {/* File Info & Metadata Inputs */}
         <div className="flex-grow">
           <h3 className="font-semibold text-lg truncate" title={file.originalName}>{file.originalName}</h3>
           <p className="text-sm text-gray-500">
@@ -108,7 +111,7 @@ export default function ImageCard({ file, onProcessImage, isProcessing }: ImageC
           )}
         </div>
 
-        {/* Processing Controls & Results */} 
+        {/* Processing Controls & Results */}
         <div className="flex-shrink-0 md:w-48 mt-4 md:mt-0 flex flex-col justify-between">
           {(file.status === 'uploaded' || file.status === 'failed') && (
             <div className="space-y-3">

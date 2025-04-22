@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import sharp from 'sharp';
-import { put, head, del } from '@vercel/blob';
+import { put } from '@vercel/blob';
 import type { ImageFile, CompressionSettings, ImageMetadata } from '@/app/types';
 
 // Define MVP supported formats for processing
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   const startTime = Date.now();
-  let updatedImageFile: Partial<ImageFile> = { status: 'processing' };
+  const updatedImageFile: Partial<ImageFile> = { status: 'processing' };
 
   try {
     // 1. Fetch the original image from Vercel Blob

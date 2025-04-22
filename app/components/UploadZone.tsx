@@ -80,9 +80,20 @@ export default function UploadZone({ onFilesUploaded, setErrorMessage }: UploadZ
       {
         isDragActive ?
           <p className="text-blue-600">Drop the images here ...</p> :
-          <p className="text-gray-500">Drag 'n' drop some images here, or click to select files</p>
+          <p className="text-gray-500">Drag &apos;n&apos; drop some images here, or click to select files</p>
       }
       <p className="text-sm text-gray-400 mt-2">Supported: JPG, PNG, WebP, AVIF (Max 10MB each)</p>
+      <div className="flex text-sm text-gray-600">
+        <label
+          htmlFor="file-upload"
+        >
+          <span>Upload a file</span>
+        </label>
+        <p className="pl-1">or drag and drop</p>
+      </div>
+      <p className="text-xs text-gray-500">
+        PNG, JPG, GIF, WEBP up to 10MB. We&apos;ll optimize it for you!
+      </p>
     </div>
   );
 }

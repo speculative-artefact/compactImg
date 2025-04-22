@@ -10,9 +10,6 @@ const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
 // Define allowed mime types for MVP (JPEG, PNG) + others from PRD for future phases
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
-// MVP specific types for initial processing logic
-const MVP_MIME_TYPES = ['image/jpeg', 'image/png'];
-
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const formData = await request.formData();
@@ -47,8 +44,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       const blob = await put(blobPath, file, {
         access: 'public',
         contentType: file.type,
-        // Add cache control headers for temporary nature
-        cacheControl: 'public, max-age=3600', // Cache for 1 hour (adjust TTL as needed)
+        // Use cacheControlMaxAge instead of cacheControl
+        cacheControlMaxAge: 3600, // Cache for 1 hour (in seconds)
       });
 
       // Prepare the ImageFile object based on PRD

@@ -34,3 +34,8 @@ export interface ImageFile {
   processingTimeMs?: number; // Time taken for compression
   blobUrl?: string; // URL of the originally uploaded blob
 }
+
+export interface ErrorResponse {
+  error: string;
+  details?: Error | string; // Use Error or string for details
+}
