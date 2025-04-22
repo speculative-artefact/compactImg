@@ -64,9 +64,7 @@ export default function ImageCard({ file, onProcessImage, isProcessing }: ImageC
         {/* Thumbnail/Preview */}
         <div className="flex-shrink-0 w-full md:w-32 h-32 bg-gray-100 rounded flex items-center justify-center overflow-hidden">
           {file.blobUrl ? (
-            // Note: TS Error "Cannot find name 'img'" (ts2304) on the line below might indicate a tsconfig.json issue
-            // (e.g., missing "dom" in compilerOptions.lib) or a broader environment setup problem.
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+            // eslint-disable-next-line @next/next/no-img-element
             <img src={file.blobUrl} alt={file.originalName} className="object-contain max-h-full max-w-full" />
           ) : (
             <span className="text-gray-400 text-sm">No preview</span>
