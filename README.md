@@ -1,24 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# compactImg: Web-Based Image Compressor
+
+A simple web application built with Next.js for uploading and compressing images using various settings, leveraging Vercel Blob for storage.
+
+## Features
+
+*   **Image Upload:** Drag-and-drop or browse to upload multiple image files.
+*   **Compression Settings:** Adjust compression quality and potentially other format-specific settings (future enhancement).
+*   **Real-time Feedback:** View upload progress and processing status for each image.
+*   **Download Compressed Images:** Download the optimised versions of your images.
+*   **Vercel Blob Integration:** Securely stores original and processed images using Vercel's Blob storage.
+
+## Technology Stack
+
+*   **Framework:** [Next.js](https://nextjs.org/) (App Router)
+*   **Language:** [TypeScript](https://www.typescriptlang.org/)
+*   **UI Library:** [React](https://react.dev/)
+*   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+*   **Storage:** [Vercel Blob](https://vercel.com/storage/blob)
+*   **Deployment:** [Vercel](https://vercel.com/)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+*   Node.js (LTS version recommended)
+*   npm, yarn, pnpm, or bun
+*   A Vercel account with Blob storage enabled.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation & Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1.  **Clone the repository:**
+    ```bash
+    git clone <your-repository-url>
+    cd compactImg
+    ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    # or
+    yarn install
+    # or
+    pnpm install
+    # or
+    bun install
+    ```
+
+3.  **Set up Environment Variables:**
+    This project requires a Vercel Blob Read/Write token for storing uploaded images.
+    *   Obtain your `BLOB_READ_WRITE_TOKEN` from your Vercel project's Storage tab.
+    *   Create a file named `.env.local` in the root of the project.
+    *   Add the following line to `.env.local`, replacing `your_actual_token_here` with your token:
+        ```
+        BLOB_READ_WRITE_TOKEN=your_actual_token_here
+        ```
+    *   **Important:** Ensure `.env.local` is added to your `.gitignore` file to prevent committing your secret token.
+
+4.  **Run the development server:**
+    ```bash
+    npm run dev
+    # or
+    yarn dev
+    # or
+    pnpm dev
+    # or
+    bun dev
+    ```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
+
+The main page can be found at `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimising/fonts) to automatically optimise and load [Geist](https://vercel.com/font), a font family from Vercel.
+
+## Usage
+
+1.  **Upload Images:** Drag files onto the upload zone or click to browse and select images.
+2.  **Configure Settings (Optional):** Once uploaded, each image will appear in a card. Adjust any available compression settings as needed.
+3.  **Process:** Click the "Process" or "Compress" button for an image.
+4.  **Download:** Once processing is complete, a download link for the compressed image will become available.
 
 ## Learn More
 
@@ -32,5 +92,7 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+**Remember to configure the `BLOB_READ_WRITE_TOKEN` environment variable in your Vercel project settings before deploying.**
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

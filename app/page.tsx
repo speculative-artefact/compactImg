@@ -1,103 +1,97 @@
-import Image from "next/image";
+'use client';
+
+import React, { useState, useCallback } from 'react';
+import UploadZone from '@/app/components/UploadZone';
+import ImageCard from '@/app/components/ImageCard';
+import type { ImageFile, ImageMetadata, CompressionSettings } from '@/app/types';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [files, setFiles] = useState<ImageFile[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isProcessingAny, setIsProcessingAny] = useState<boolean>(false); // Track if *any* image is processing
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleFilesUploaded = useCallback((uploadedFiles: ImageFile[]) => {
+    // Append new files, avoiding duplicates based on blobUrl (or ID if available)
+    setFiles(prevFiles => {
+      const existingIds = new Set(prevFiles.map(f => f.blobUrl));
+      const newFiles = uploadedFiles.filter(f => !existingIds.has(f.blobUrl));
+      return [...prevFiles, ...newFiles];
+    });
+    setErrorMessage(null); // Clear error on successful upload
+  }, []);
+
+  const updateFileState = (id: string, updates: Partial<ImageFile>) => {
+    setFiles(prevFiles =>
+      prevFiles.map(file => (file.id === id ? { ...file, ...updates } : file))
+    );
+  };
+
+  const handleProcessImage = useCallback(async (id: string, settings: CompressionSettings & { metadata: ImageMetadata }) => {
+    const imageFile = files.find(f => f.id === id);
+    if (!imageFile) return;
+
+    setIsProcessingAny(true);
+    updateFileState(id, { status: 'processing', errorMessage: undefined }); // Set status to processing
+
+    try {
+      const response = await fetch('/api/process', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageFile, settings }),
+      });
+
+      const result: ImageFile = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.errorMessage || 'Processing failed');
+      }
+
+      updateFileState(id, result); // Update with completed/failed status and results
+
+    } catch (error) {
+      console.error('Processing error:', error);
+      updateFileState(id, {
+        status: 'failed',
+        errorMessage: error instanceof Error ? error.message : 'An unknown error occurred during processing.',
+      });
+    } finally {
+      // Check if any *other* files are still processing before setting global flag to false
+      setFiles(currentFiles => {
+        const stillProcessing = currentFiles.some(f => f.id !== id && f.status === 'processing');
+        setIsProcessingAny(stillProcessing);
+        return currentFiles; // No state change needed here, just checking
+      });
+    }
+  }, [files]);
+
+  return (
+    <main className="container mx-auto p-4 md:p-8">
+      <h1 className="text-3xl font-bold mb-6 text-center">compactImg Image Compressor</h1>
+
+      <div className="mb-8">
+        <UploadZone onFilesUploaded={handleFilesUploaded} setErrorMessage={setErrorMessage} />
+        {errorMessage && (
+          <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            <p><strong>Error:</strong> {errorMessage}</p>
+          </div>
+        )}
+      </div>
+
+      {files.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-2xl font-semibold mb-4">Uploaded Images</h2>
+          <div className="space-y-4">
+            {files.map(file => (
+              <ImageCard
+                key={file.id} // Use the unique ID from the upload response
+                file={file}
+                onProcessImage={handleProcessImage}   // Connect handler
+                isProcessing={isProcessingAny} // Disable inputs globally if any image is processing
+              />
+            ))}
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      )}
+    </main>
   );
 }
