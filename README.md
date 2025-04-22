@@ -2,6 +2,8 @@
 
 A simple web application built with Next.js for uploading and compressing images using various settings, leveraging Vercel Blob for storage.
 
+**Live Demo:** [https://compactimg-6hn8ippey-bradleys-projects-00671824.vercel.app/](https://compactimg-6hn8ippey-bradleys-projects-00671824.vercel.app/)
+
 ## Features
 
 *   **Image Upload:** Drag-and-drop or browse to upload multiple image files.
